@@ -69,7 +69,52 @@ router.post("/signin",async(req,res)=>{
         })
     }
 })
-router.post("/transaction",usermiddleware,(req,res)=>{
-    const userid=req.userid
+
+const updateuser=z.object({
+    password:z.string().min(6).max(10),
+    firstname:z.string().max(10).min(6),
+    lastname:z.string().max(10).min(6)
+})
+router.put("/",usermiddleware,async (req,res)=>{
+    const sucess=updateuser.safeParse(req.body)
+    if(!sucess){
+        res.json({
+            message:"error whilw updating format"
+        })
+    }
+    await User.updateOne(sucess,{
+        _id:req.userid
+    })
+    res.json({
+        message:"format is updated"
+    })
+
+})
+
+router.get("/bulk",async (req,res)=>{
+    const filter=req.query.filter || ""
+
+    const users=await User.find({
+         $or:[{
+            firstname:{
+                "$regex":filter
+            }
+         },{
+            lastname:{
+                "$regex":filter
+            }
+         }]
+    })
+
+    res.json({
+        user:users.map(user=>({
+            username:user.username,
+            firstname:user.firstname,
+            lastname:user.lastname,
+            _id:user._id
+        })
+            
+        )
+    })
 })
 module.exports=router

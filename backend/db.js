@@ -9,9 +9,17 @@ const userschema= new mongoose.Schema({
     lastname:String
 })
 
+const accounts=new mongoose.Schema({
+    userid:{type:mongoose.Types.ObjectId,ref:"User"},
+    balance:float/number
+
+})
+
 const User= mongoose.model("User",userschema)
+const Account=mongoose.model("Account",accounts)
 
 
 module.exports={
-    User
+    User,
+    Account
 }
