@@ -1,6 +1,6 @@
 const express=require("express")
 const {z}=require("zod")
-const {jwt}=require("jsonwebtoken")
+const jwt=require("jsonwebtoken")
 const bcrypt=require("bcrypt")
 const {User}=require('../db')
 const JWT_SECRET = require("../config")
@@ -11,7 +11,7 @@ const router=express.Router()
 router.post("/signup",async (req,res)=>{
     const requireduser=z.object({
         username:z.string().min(10).max(20),
-        password:z.string().main(6).max(20),
+        password:z.string().min(6).max(20),
         firstname:z.string().min(10).max(20),
         lastname:z.string().min(10).max(20)
     })
@@ -45,7 +45,7 @@ router.post("/signin",async(req,res)=>{
     const {email,password}=req.body
 
     const user=await User.findOne({
-        email:email
+        username:email
     })
 
     if(!user){
@@ -92,8 +92,12 @@ router.put("/",usermiddleware,async (req,res)=>{
 })
 
 router.get("/bulk",async (req,res)=>{
-    const filter=req.query.filter || ""
-
+    const filter=req.query.filter
+    if (typeof filter !== 'string') {
+        return res.json({
+            message: "Filter must be a string"
+        });
+    }
     const users=await User.find({
          $or:[{
             firstname:{

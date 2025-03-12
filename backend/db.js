@@ -11,7 +11,7 @@ const userschema= new mongoose.Schema({
 
 const accounts=new mongoose.Schema({
     userid:{type:mongoose.Types.ObjectId,ref:"User"},
-    balance:number
+    balance:Number
 })
 
 const User= mongoose.model("User",userschema)
