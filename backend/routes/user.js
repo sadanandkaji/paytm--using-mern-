@@ -2,7 +2,7 @@ const express=require("express")
 const {z}=require("zod")
 const jwt=require("jsonwebtoken")
 const bcrypt=require("bcrypt")
-const {User}=require('../db')
+const {User, Account}=require('../db')
 const JWT_SECRET = require("../config")
 const { usermiddleware } = require("../middlewares/user")
 
@@ -34,6 +34,7 @@ router.post("/signup",async (req,res)=>{
         res.json({
             message:"signed up succefully"
         })
+       
     }catch(e){
         res.json({
             message:"user already exist"
@@ -121,4 +122,16 @@ router.get("/bulk",async (req,res)=>{
         )
     })
 })
+router.post("/add-balance",usermiddleware, async (req, res) => {
+   const addmoney=req.body.addmoney
+
+    const userid = req.userid;
+    await Account.create({
+        userid,
+        balance:addmoney
+    })
+    res.json({
+        message:"money added"
+    })
+});
 module.exports=router

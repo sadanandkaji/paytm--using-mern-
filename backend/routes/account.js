@@ -6,6 +6,13 @@ const { Account } = require("../db")
 
 const router=express.Router()
 
+router.get("/balance",usermiddleware,async(req,res)=>{
+
+    const balance=await Account.findOne({userid:req.userid})
+    res.json({
+        balance:balance.balance
+    })
+})
 router.post("/transfer",usermiddleware,async (req,res)=>{
     const session=await mongoose.startSession()
 
@@ -38,11 +45,7 @@ router.post("/transfer",usermiddleware,async (req,res)=>{
 
 })
 
-router.get("/balance",usermiddleware,async(req,res)=>{
 
-    const balance=await Account.findOne({userid:req.userid})
-    res.json({
-        balance:balance.balance
-    })
-})
+
+
 module.exports=router
