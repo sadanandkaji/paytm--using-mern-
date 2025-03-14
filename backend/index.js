@@ -10,4 +10,4 @@ const mainrouter=require("./routes/index.js")
 
 app.use("/api/v1",mainrouter)
 
-app.listen(3000)
+app.listen(3004)
